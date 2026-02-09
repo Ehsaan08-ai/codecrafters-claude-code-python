@@ -100,6 +100,16 @@ def main():
                             "content": content,
                         }
                     )
+            elif function_name == "Write":
+                with open(arguments["file_path"], "w") as f:
+                    f.write(arguments["content"])
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": "File written successfully",
+                        }
+                    )
 
 
 if __name__ == "__main__":
