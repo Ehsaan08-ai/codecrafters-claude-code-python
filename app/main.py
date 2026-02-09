@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import sys
 
@@ -45,10 +46,19 @@ def main():
 
     # You can use print statements as follows for debugging, they'll be visible when running tests.
     print("Logs from your program will appear here!", file=sys.stderr)
+    message = chat.choices[0].message
 
     # TODO: Uncomment the following line to pass the first stage
     print(chat.choices[0].message.content)
-
+    if message.tool_calls:
+        tool_call = message.tool_calls[0]
+        function_name = tool_call.function.name
+        arguments = json.loads(tool_call.function.arguments)
+        if function_name == "Read":
+            with open(arguments["file_path"], "r") as f:
+                print(f.read(), end="")
+    else:
+        print(message.content)
 
 if __name__ == "__main__":
     main()
