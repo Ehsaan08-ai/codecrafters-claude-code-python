@@ -75,16 +75,16 @@ def main():
                     "description": "Execute a shell command",
                     "parameters": {
                         "type": "object",
-                        "required": ["command"],
                         "properties": {
                             "command": {
                                 "type": "string",
-                                "description": "The command to execute"
-                            }
-                        }
-                    }
-                }
-            }
+                                "description": "The command to execute",
+                            },
+                        },
+                        "required": ["command"],
+                    },
+                },
+            },
         ],
 )
 
@@ -136,15 +136,17 @@ def main():
                         arguments["command"],
                         shell=True,
                         capture_output=True,
-                        text=True
+                        text=True,
+                        timeout=30,
                     )
-                    # Combine stdout and stderr
                     output = result.stdout + result.stderr
+                    if not output:
+                        output = ""
                     messages.append(
                         {
                             "role": "tool",
                             "tool_call_id": tool_call.id,
-                            "content": output if output else "Command executed successfully",
+                            "content": output,
                         }
                     )
                 except Exception as e:
