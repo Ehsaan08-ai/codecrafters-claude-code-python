@@ -67,6 +67,23 @@ def main():
                         "required": ["file_path", "content"],
                     },
                 },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "Bash",
+                    "description": "Execute a shell command",
+                    "parameters": {
+                        "type": "object",
+                        "required": ["command"],
+                        "properties": {
+                            "command": {
+                                "type": "string",
+                                "description": "The command to execute"
+                            }
+                        }
+                    }
+                }
             }
         ],
 )
@@ -111,6 +128,31 @@ def main():
                             "role": "tool",
                             "tool_call_id": tool_call.id,
                             "content": "File written successfully",
+                        }
+                    )
+            elif function_name == "Bash":
+                try:
+                    result = subprocess.run(
+                        arguments["command"],
+                        shell=True,
+                        capture_output=True,
+                        text=True
+                    )
+                    # Combine stdout and stderr
+                    output = result.stdout + result.stderr
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": output if output else "Command executed successfully",
+                        }
+                    )
+                except Exception as e:
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": f"Error executing command: {str(e)}",
                         }
                     )
 
