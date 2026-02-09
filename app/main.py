@@ -49,7 +49,7 @@ def main():
     message = chat.choices[0].message
 
     # TODO: Uncomment the following line to pass the first stage
-    print(chat.choices[0].message.content)
+    # print(chat.choices[0].message.content)
     if message.tool_calls:
         tool_call = message.tool_calls[0]
         function_name = tool_call.function.name
